@@ -5,4 +5,7 @@ This Minecraft plugin is a simple example of use of what can be done using Staff
 It contains a configurable staff mod that can be enabled or disabled using the /configurablestaffmod command.
 </p>
 
-<p>StaffModLib project<p> : https://gitlab.com/Syr0ws/staffmodlib
+<div>
+<p style="font-weight: bold; display: inline">StaffModLib project: </p><a>https://gitlab.com/Syr0ws/staffmodlib</a>
+</div>
+
