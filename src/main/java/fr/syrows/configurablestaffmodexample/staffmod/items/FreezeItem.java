@@ -1,8 +1,10 @@
 package fr.syrows.configurablestaffmodexample.staffmod.items;
 
-import fr.syrows.staffmodlib.events.items.ItemUseOnEntityEvent;
-import fr.syrows.staffmodlib.staffmod.items.AbstractStaffModItem;
-import fr.syrows.staffmodlib.util.Configurable;
+import fr.syrows.staffmodlib.bukkit.configuration.Configurable;
+import fr.syrows.staffmodlib.bukkit.events.items.ItemUseEvent;
+import fr.syrows.staffmodlib.bukkit.events.items.ItemUseOnBlockEvent;
+import fr.syrows.staffmodlib.bukkit.events.items.ItemUseOnEntityEvent;
+import fr.syrows.staffmodlib.bukkit.items.BukkitStaffModItem;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
@@ -13,14 +15,16 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
-public class FreezeItem extends AbstractStaffModItem implements Configurable {
+public class FreezeItem extends BukkitStaffModItem implements Configurable {
 
+    private final Player holder;
     private final Plugin plugin;
+
     private ItemStack item;
     private Listener listener;
 
     public FreezeItem(Player holder, Plugin plugin) {
-        super(holder);
+        this.holder = holder;
         this.plugin = plugin;
     }
 
@@ -39,7 +43,7 @@ public class FreezeItem extends AbstractStaffModItem implements Configurable {
     }
 
     @Override
-    public ItemStack getItemStack() {
+    public ItemStack getItem() {
         return this.item.clone();
     }
 
@@ -63,7 +67,7 @@ public class FreezeItem extends AbstractStaffModItem implements Configurable {
 
             // Necessary. Checking that the holder of the items and the player
             // associated with the event are the sames.
-            if(!player.equals(getHolder())) return;
+            if(!player.equals(FreezeItem.this.holder)) return;
 
             // Necessary. Checking that the current item and the items associated
             // with the event are the sames.
@@ -82,6 +86,18 @@ public class FreezeItem extends AbstractStaffModItem implements Configurable {
 
             // Cancelling the interaction.
             event.setCancelled(true);
+        }
+
+        @EventHandler
+        public void onItemUse(ItemUseEvent event) {
+            event.setCancelled(true);
+            event.getPlayer().updateInventory(); // Preventing display bugs caused by cancelling interaction.
+        }
+
+        @EventHandler
+        public void onItemUseOnBlock(ItemUseOnBlockEvent event) {
+            event.setCancelled(true);
+            event.getPlayer().updateInventory(); // Preventing display bugs caused by cancelling interaction.
         }
     }
 }

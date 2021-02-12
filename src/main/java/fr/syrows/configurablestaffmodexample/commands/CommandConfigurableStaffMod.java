@@ -1,20 +1,23 @@
 package fr.syrows.configurablestaffmodexample.commands;
 
 import fr.syrows.configurablestaffmodexample.staffmod.ConfigurableStaffMod;
-import fr.syrows.staffmodlib.StaffModManager;
-import fr.syrows.staffmodlib.staffmod.StaffMod;
+import fr.syrows.staffmodlib.bukkit.BukkitStaffModManager;
+import fr.syrows.staffmodlib.common.staffmod.StaffMod;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+
+import java.util.Optional;
 
 public class CommandConfigurableStaffMod implements CommandExecutor {
 
     private final Plugin plugin;
-    private final StaffModManager manager;
+    private final BukkitStaffModManager manager;
 
-    public CommandConfigurableStaffMod(Plugin plugin, StaffModManager manager) {
+    public CommandConfigurableStaffMod(Plugin plugin, BukkitStaffModManager manager) {
         this.plugin = plugin;
         this.manager = manager;
     }
@@ -27,17 +30,20 @@ public class CommandConfigurableStaffMod implements CommandExecutor {
 
         Player player = (Player) sender;
 
-        // Checking if the player is in staff mod.
-        if(!this.manager.isInStaffMod(player)) {
+        Optional<StaffMod<Player, ItemStack>> optional = this.manager.getStaffMod(player);
 
-            ConfigurableStaffMod staffMod = new ConfigurableStaffMod(this.manager, this.plugin);
-            staffMod.enable(player); // Enabling staff mod.
+        // Checking if the player is in staff mod.
+        if(optional.isPresent()) {
+
+            StaffMod<Player, ItemStack> staffMod = optional.get();
+            staffMod.disable(player); // Disabling staff mod.
 
         } else {
 
-            StaffMod staffMod = this.manager.getNullableStaffMod(player);
-            staffMod.disable(player); // Disabling staff mod.
+            StaffMod<Player, ItemStack> staffMod = new ConfigurableStaffMod(this.manager, this.plugin);
+            staffMod.enable(player); // Enabling staff mod.
         }
+
         return true;
     }
 }

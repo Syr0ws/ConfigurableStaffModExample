@@ -3,34 +3,39 @@ package fr.syrows.configurablestaffmodexample.staffmod;
 import fr.syrows.configurablestaffmodexample.staffmod.items.FreezeItem;
 import fr.syrows.configurablestaffmodexample.staffmod.items.InvseeItem;
 import fr.syrows.configurablestaffmodexample.staffmod.items.VanishItem;
-import fr.syrows.staffmodlib.StaffModManager;
-import fr.syrows.staffmodlib.data.*;
-import fr.syrows.staffmodlib.staffmod.AbstractStaffMod;
-import fr.syrows.staffmodlib.staffmod.items.StaffModItem;
-import fr.syrows.staffmodlib.util.Configurable;
+import fr.syrows.staffmodlib.bukkit.BukkitStaffModManager;
+import fr.syrows.staffmodlib.bukkit.configuration.Configurable;
+import fr.syrows.staffmodlib.bukkit.data.*;
+import fr.syrows.staffmodlib.bukkit.items.BukkitStaffModItem;
+import fr.syrows.staffmodlib.bukkit.staffmod.BukkitStaffMod;
+import fr.syrows.staffmodlib.common.data.DataHandler;
+import fr.syrows.staffmodlib.common.items.StaffModItem;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.util.*;
 
-public class ConfigurableStaffMod extends AbstractStaffMod implements Configurable {
+public class ConfigurableStaffMod extends BukkitStaffMod implements Configurable {
 
     // Plugin will be needed to register item listeners.
     private final Plugin plugin;
 
+    private DataHandler<Player> handler;
+
     // By default, items are not stored even if you call the registerItem(StaffModItem item) method.
     // So, you have to create this list in this implementation.
-    private final List<StaffModItem> items = new ArrayList<>();
+    private final List<StaffModItem<ItemStack>> items = new ArrayList<>();
 
-    public ConfigurableStaffMod(StaffModManager manager, Plugin plugin) {
+    public ConfigurableStaffMod(BukkitStaffModManager manager, Plugin plugin) {
         super(manager);
         this.plugin = plugin;
     }
 
     @Override
-    public void registerItem(StaffModItem item) {
+    public void registerItem(StaffModItem<ItemStack> item) {
 
         // Calling super method. Do not forget to do that !
         super.registerItem(item);
@@ -40,16 +45,56 @@ public class ConfigurableStaffMod extends AbstractStaffMod implements Configurab
     }
 
     @Override
-    public void registerItems(Player player) {
+    public void enable(Player holder) {
+
+        this.registerItems(holder);
+
+        this.handler = this.createPlayerData();
+        this.handler.save(holder);
+        this.handler.clear(holder);
+
+        this.setItems(holder);
+
+        super.enable(holder);
+    }
+
+    @Override
+    public void disable(Player holder) {
+
+        this.removeItems(holder);
+
+        this.handler.clear(holder);
+        this.handler.restore(holder);
+        this.handler = null;
+
+        super.disable(holder);
+    }
+
+    @Override
+    public Collection<StaffModItem<ItemStack>> getItemsHeld() {
+        // Returning our own list of items.
+        return Collections.unmodifiableCollection(this.items);
+    }
+
+    @Override
+    public void configure(ConfigurationSection parent) {
+
+        this.items.stream()
+                .filter(item -> item instanceof Configurable)
+                .map(item -> (Configurable) item)
+                .forEach(configurable -> configurable.configure(parent));
+    }
+
+    private void registerItems(Player player) {
 
         // Registering our items. The method registerItem(StaffModItem item)
         // must be performed on each item you want to register because an item
         // may need an initialization.
 
         // Declaring items.
-        StaffModItem vanishItem = new VanishItem(player, this.plugin);
-        StaffModItem freezeItem = new FreezeItem(player, this.plugin);
-        StaffModItem invseeItem = new InvseeItem(player, this.plugin);
+        BukkitStaffModItem vanishItem = new VanishItem(player, this.plugin);
+        BukkitStaffModItem freezeItem = new FreezeItem(player, this.plugin);
+        BukkitStaffModItem invseeItem = new InvseeItem(player, this.plugin);
 
         // Registering items.
         this.registerItem(vanishItem);
@@ -63,34 +108,18 @@ public class ConfigurableStaffMod extends AbstractStaffMod implements Configurab
         this.configure(config.getConfigurationSection("staffmod"));
     }
 
-    @Override
-    public PlayerData createPlayerData() {
+    private PlayerDataHandler createPlayerData() {
 
         // This method has for goal to create a PlayerData object
         // which will store player state before enabling the staff mod.
 
-        List<Data> data = Arrays.asList(
-                new InventoryData(), // Storing inventory information.
-                new PotionData(), // Storing potion effects information.
-                new GameModeData(), // Storing current game mode.
-                new HealthData(), // Storing health information.
-                new FoodData() // Storing food information.
+        List<DataHandler<Player>> data = Arrays.asList(
+                new InventoryDataHandler(), // Storing inventory information.
+                new PotionDataHandler(), // Storing potion effects information.
+                new GameModeDataHandler(), // Storing current game mode.
+                new HealthDataHandler(), // Storing health information.
+                new FoodDataHandler() // Storing food information.
         );
-        return new PlayerData(data);
-    }
-
-    @Override
-    public Collection<StaffModItem> getItems() {
-        // Returning our own list of items.
-        return Collections.unmodifiableCollection(this.items);
-    }
-
-    @Override
-    public void configure(ConfigurationSection parent) {
-
-        this.items.stream()
-                .filter(item -> item instanceof Configurable)
-                .map(item -> (Configurable) item)
-                .forEach(configurable -> configurable.configure(parent));
+        return new PlayerDataHandler(data);
     }
 }
