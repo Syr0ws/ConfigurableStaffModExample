@@ -8,6 +8,7 @@ import fr.syrows.staffmodlib.bukkit.configuration.Configurable;
 import fr.syrows.staffmodlib.bukkit.data.*;
 import fr.syrows.staffmodlib.bukkit.items.BukkitStaffModItem;
 import fr.syrows.staffmodlib.bukkit.staffmod.BukkitStaffMod;
+import fr.syrows.staffmodlib.bukkit.staffmod.SimpleBukkitStaffMod;
 import fr.syrows.staffmodlib.common.data.DataHandler;
 import fr.syrows.staffmodlib.common.items.StaffModItem;
 import org.bukkit.configuration.ConfigurationSection;
@@ -18,7 +19,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.*;
 
-public class ConfigurableStaffMod extends BukkitStaffMod implements Configurable {
+public class ConfigurableStaffMod extends SimpleBukkitStaffMod implements Configurable {
 
     // Plugin will be needed to register item listeners.
     private final Plugin plugin;
@@ -53,15 +54,11 @@ public class ConfigurableStaffMod extends BukkitStaffMod implements Configurable
         this.handler.save(holder);
         this.handler.clear(holder);
 
-        this.setItems(holder);
-
         super.enable(holder);
     }
 
     @Override
     public void disable(Player holder) {
-
-        this.removeItems(holder);
 
         this.handler.clear(holder);
         this.handler.restore(holder);
