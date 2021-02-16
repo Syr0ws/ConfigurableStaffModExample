@@ -73,7 +73,7 @@ public class VanishItem extends BukkitStaffModItem implements Configurable {
 
         @EventHandler
         public void onItemUseOnEntity(ItemUseOnEntityEvent event) {
-            this.handle(event);
+            event.setCancelled(true);
         }
 
         // Using this method to not repeat code.
