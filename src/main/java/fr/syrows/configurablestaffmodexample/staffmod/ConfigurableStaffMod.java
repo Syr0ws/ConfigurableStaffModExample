@@ -48,8 +48,10 @@ public class ConfigurableStaffMod extends SimpleBukkitStaffMod implements Config
     @Override
     public void enable(Player holder) {
 
+        // Registering items.
         this.registerItems(holder);
 
+        // Saving player data.
         this.handler = this.createPlayerData();
         this.handler.save(holder);
         this.handler.clear(holder);
@@ -60,9 +62,10 @@ public class ConfigurableStaffMod extends SimpleBukkitStaffMod implements Config
     @Override
     public void disable(Player holder) {
 
+        // Restoring player data.
         this.handler.clear(holder);
         this.handler.restore(holder);
-        this.handler = null;
+        this.handler = null; // Avoiding reuse.
 
         super.disable(holder);
     }
