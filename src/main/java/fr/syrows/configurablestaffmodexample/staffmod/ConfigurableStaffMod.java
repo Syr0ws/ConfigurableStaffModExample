@@ -7,17 +7,15 @@ import fr.syrows.staffmodlib.bukkit.BukkitStaffModManager;
 import fr.syrows.staffmodlib.bukkit.configuration.Configurable;
 import fr.syrows.staffmodlib.bukkit.data.*;
 import fr.syrows.staffmodlib.bukkit.items.BukkitStaffModItem;
-import fr.syrows.staffmodlib.bukkit.staffmod.BukkitStaffMod;
 import fr.syrows.staffmodlib.bukkit.staffmod.SimpleBukkitStaffMod;
 import fr.syrows.staffmodlib.common.data.DataHandler;
-import fr.syrows.staffmodlib.common.items.StaffModItem;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
 public class ConfigurableStaffMod extends SimpleBukkitStaffMod implements Configurable {
 
