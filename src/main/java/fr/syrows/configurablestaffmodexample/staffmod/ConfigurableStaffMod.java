@@ -26,23 +26,9 @@ public class ConfigurableStaffMod extends SimpleBukkitStaffMod implements Config
 
     private DataHandler<Player> handler;
 
-    // By default, items are not stored even if you call the registerItem(StaffModItem item) method.
-    // So, you have to create this list in this implementation.
-    private final List<StaffModItem<ItemStack>> items = new ArrayList<>();
-
     public ConfigurableStaffMod(BukkitStaffModManager manager, Plugin plugin) {
         super(manager);
         this.plugin = plugin;
-    }
-
-    @Override
-    public void registerItem(StaffModItem<ItemStack> item) {
-
-        // Calling super method. Do not forget to do that !
-        super.registerItem(item);
-
-        // This line is very important because items are not stored by default.
-        this.items.add(item);
     }
 
     @Override
@@ -71,15 +57,9 @@ public class ConfigurableStaffMod extends SimpleBukkitStaffMod implements Config
     }
 
     @Override
-    public Collection<StaffModItem<ItemStack>> getItemsHeld() {
-        // Returning our own list of items.
-        return Collections.unmodifiableCollection(this.items);
-    }
-
-    @Override
     public void configure(ConfigurationSection parent) {
 
-        this.items.stream()
+        this.getItemsHeld().stream()
                 .filter(item -> item instanceof Configurable)
                 .map(item -> (Configurable) item)
                 .forEach(configurable -> configurable.configure(parent));
