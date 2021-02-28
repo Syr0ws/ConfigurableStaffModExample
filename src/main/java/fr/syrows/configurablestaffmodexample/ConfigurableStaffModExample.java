@@ -2,11 +2,14 @@ package fr.syrows.configurablestaffmodexample;
 
 import fr.syrows.configurablestaffmodexample.commands.CommandConfigurableStaffMod;
 import fr.syrows.staffmodlib.bukkit.BukkitStaffModManager;
+import fr.syrows.staffmodlib.common.staffmod.StaffModManager;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ConfigurableStaffModExample extends JavaPlugin {
 
-    private BukkitStaffModManager manager;
+    private StaffModManager<Player, ItemStack> manager;
 
     @Override
     public void onEnable() {

@@ -1,8 +1,8 @@
 package fr.syrows.configurablestaffmodexample.commands;
 
 import fr.syrows.configurablestaffmodexample.staffmod.ConfigurableStaffMod;
-import fr.syrows.staffmodlib.bukkit.BukkitStaffModManager;
 import fr.syrows.staffmodlib.common.staffmod.StaffMod;
+import fr.syrows.staffmodlib.common.staffmod.StaffModManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,9 +15,9 @@ import java.util.Optional;
 public class CommandConfigurableStaffMod implements CommandExecutor {
 
     private final Plugin plugin;
-    private final BukkitStaffModManager manager;
+    private final StaffModManager<Player, ItemStack> manager;
 
-    public CommandConfigurableStaffMod(Plugin plugin, BukkitStaffModManager manager) {
+    public CommandConfigurableStaffMod(Plugin plugin, StaffModManager<Player, ItemStack>  manager) {
         this.plugin = plugin;
         this.manager = manager;
     }

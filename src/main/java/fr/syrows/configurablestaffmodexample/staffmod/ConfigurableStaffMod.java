@@ -3,15 +3,16 @@ package fr.syrows.configurablestaffmodexample.staffmod;
 import fr.syrows.configurablestaffmodexample.staffmod.items.FreezeItem;
 import fr.syrows.configurablestaffmodexample.staffmod.items.InvseeItem;
 import fr.syrows.configurablestaffmodexample.staffmod.items.VanishItem;
-import fr.syrows.staffmodlib.bukkit.BukkitStaffModManager;
 import fr.syrows.staffmodlib.bukkit.configuration.Configurable;
 import fr.syrows.staffmodlib.bukkit.data.*;
 import fr.syrows.staffmodlib.bukkit.items.BukkitStaffModItem;
 import fr.syrows.staffmodlib.bukkit.staffmod.SimpleBukkitStaffMod;
 import fr.syrows.staffmodlib.common.data.DataHandler;
+import fr.syrows.staffmodlib.common.staffmod.StaffModManager;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Arrays;
@@ -24,7 +25,7 @@ public class ConfigurableStaffMod extends SimpleBukkitStaffMod implements Config
 
     private DataHandler<Player> handler;
 
-    public ConfigurableStaffMod(BukkitStaffModManager manager, Plugin plugin) {
+    public ConfigurableStaffMod(StaffModManager<Player, ItemStack> manager, Plugin plugin) {
         super(manager);
         this.plugin = plugin;
     }
